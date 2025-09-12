@@ -1,0 +1,15 @@
+Name,Link,Bought
+Bo Jungle Dolphin Nougat Potje,https://www.mamaloes.nl/bo-jungle-dolphin-nougat-potje-b416020,false
+Jollein Knuffel Fairy Mae,https://www.babyentiener.nl/jollein-knuffel-fairy-mae.html,false
+Jollein Knuffel Fairy Livia,https://www.babyentiener.nl/jollein-knuffel-fairy-livia.html,true
+Antislip Haarspeldjes Raquel,https://www.mooiehaartjes.nl/product/14175771/antislip-haarspeldjes-raquel,false
+Haarband Selma Licht,https://www.mooiehaartjes.nl/product/10885455/haarband-selma-licht,false
+Haarspeldje Anti Slip Set Light Pink,https://happybylies.com/products/haarspeldje-anti-slip-set-light-pink,true
+Plus-Plus BIG Bloom 100 st,https://toyacademy.nl/plus-plus-big-bloom-100-st-1123-3491,false
+Plus-Plus BIG Pastel 100 stk,https://toyacademy.nl/plus-plus-big-pastel-100-stk-1123-3412,false
+Tryco Grey Potje,https://www.mamaloes.nl/tryco-grey-potje-tr-901976,false
+Liewood Arthur Lunchbox Peach/Sea Shell Mix,https://www.zalando.nl/liewood-arthur-lunchbox-unisex-brooddoos-peachsea-shell-mix-lcr53o00b-t12.html,false
+Label Label Roze Houten Theeservies Set,https://www.mamaloes.nl/label-label-roze-houten-theeservies-set-llwt-24838,false
+Label Label Roze Houten Stapelblokken,https://www.mamaloes.nl/label-label-roze-houten-stapelblokken-llwt-25309,false
+Label Label Roze Houten Activiteitenkubus,https://www.mamaloes.nl/label-label-roze-houten-activiteitenkubus-llwt-34314,false
+Label Label Roze 50 Stuks Houten Blokken,https://www.mamaloes.nl/label-label-roze-50-stuks-houten-blokken-llwt-25347,false

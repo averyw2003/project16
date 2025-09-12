@@ -1,0 +1,90 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }}</title>
+  <style>
+    :root{--bg:#f7f7fb;--card:#ffffff;--text:#111827;--muted:#6b7280;--brand:#7c3aed;--brand-dark:#6d28d9;--ring:rgba(124,58,237,.35);}
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;min-height:100vh;background:linear-gradient(135deg,#f8fafc 0%,#eef2ff 100%);color:var(--text);display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{width:100%;max-width:760px;background:var(--card);border-radius:16px;box-shadow:0 10px 30px rgba(17,24,39,.06),0 2px 6px rgba(17,24,39,.04);overflow:hidden}
+    .header{padding:24px 28px;border-bottom:1px solid #eef2ff;background:radial-gradient(1200px 200px at -5% -20%,rgba(124,58,237,.06),transparent 60%)}
+    h1{margin:0;font-size:26px;letter-spacing:.2px}
+    p.sub{margin:6px 0 0;color:var(--muted)}
+    form{margin:0}
+    ol{list-style:none;padding:0;margin:0}
+    .item{display:flex;gap:14px;align-items:flex-start;padding:14px 20px;border-bottom:1px dashed #eef2ff}
+    .item:last-child{border-bottom:none}
+    .index{flex:0 0 32px;height:32px;border-radius:10px;background:#f5f3ff;color:#5b21b6;display:inline-flex;align-items:center;justify-content:center;font-weight:600}
+    .content{flex:1 1 auto}
+    .content a{color:var(--brand);text-decoration:none}
+    .content a:hover{text-decoration:underline}
+    .checkbox{flex:0 0 auto;margin-top:3px}
+    input[type="checkbox"]{width:20px;height:20px;border-radius:6px;border:2px solid #e5e7eb;appearance:none;display:inline-grid;place-content:center;background:white;cursor:pointer;transition:.15s border-color,.15s box-shadow,.15s background}
+    input[type="checkbox"]:checked{background:var(--brand);border-color:var(--brand)}
+    input[type="checkbox"]:focus{outline:none;box-shadow:0 0 0 4px var(--ring)}
+    input[type="checkbox"]::before{content:"";width:12px;height:12px;transform:scale(0);transition:transform .12s ease-in-out;background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="white"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414L8.5 11.086l6.543-6.543a1 1 0 011.664.75z" clip-rule="evenodd"/></svg>') center/contain no-repeat}
+    input[type="checkbox"]:checked::before{transform:scale(1)}
+    .footer{display:flex;gap:12px;justify-content:flex-end;padding:18px 20px;background:#fafaff;border-top:1px solid #eef2ff}
+    button.primary{padding:10px 16px;border-radius:10px;border:0;background:var(--brand);color:white;font-weight:600;cursor:pointer;box-shadow:0 6px 14px rgba(124,58,237,.25)}
+    button.primary:hover{background:var(--brand-dark)}
+    .pill{display:inline-block;margin-left:8px;font-size:12px;color:#065f46;background:#ecfdf5;border:1px solid #a7f3d0;padding:2px 8px;border-radius:999px}
+    .muted{color:var(--muted)}
+    .strike{opacity:.6}
+  </style>
+  <script>
+    async function toggleStrikeAndSave(checkbox, id){
+      const row = document.getElementById('row-'+id);
+      if(row){
+        const title = row.querySelector('.title');
+        title.style.textDecoration = checkbox.checked ? 'line-through' : 'none';
+        title.classList.toggle('strike', checkbox.checked);
+      }
+      try{
+        const formData = new FormData();
+        formData.append('index', id);
+        formData.append('checked', checkbox.checked ? 'true' : 'false');
+        const res = await fetch("{{ url_for('toggle') }}", { method: 'POST', body: formData });
+        if(res.ok){
+          const data = await res.json();
+          const pill = document.querySelector('.pill');
+          if(pill && data && typeof data.boughtCount === 'number' && typeof data.total === 'number'){
+            pill.textContent = `(${data.boughtCount}/${data.total}) aangevinkt`;
+          }
+        }
+      }catch(e){
+        console.error('Failed to save change', e);
+      }
+    }
+  </script>
+  </head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h1>{{ title }}</h1>
+      <p class="sub">Cadeau ideeën. Vink een box aan. <span class="pill">({{ presents|selectattr('bought')|list|length }}/{{ presents|length }}) aangevinkt</span></p>
+    </div>
+    <form action="{{ url_for('update') }}" method="post">
+      <ol>
+        {% for p in presents %}
+        <li class="item" id="row-{{ loop.index0 }}">
+          <div class="index">{{ loop.index }}</div>
+          <div class="content">
+            <div class="title" style="text-decoration: {{ 'line-through' if p.bought else 'none' }};">
+              {% if p.link %}<a href="{{ p.link }}" target="_blank" rel="noopener noreferrer">{{ p.name }}</a>{% else %}{{ p.name }}{% endif %}
+            </div>
+            <div class="muted">{% if p.link %}<a href="{{ p.link }}" target="_blank" rel="noopener noreferrer">{{ p.link }}</a>{% endif %}</div>
+          </div>
+          <div class="checkbox">
+            <input type="checkbox" name="bought" value="{{ loop.index0 }}" {% if p.bought %}checked{% endif %} onchange="toggleStrikeAndSave(this, {{ loop.index0 }})" aria-label="Mark {{ p.name }} as bought" />
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+      <div class="footer" style="justify-content: flex-start; color: #6b7280;">Wijzigingen worden automatisch opgeslagen.</div>
+    </form>
+  </div>
+</body>
+</html>
