@@ -65,6 +65,9 @@
     <div class="header">
       <h1>{{ title }}</h1>
       <p class="sub">Cadeau ideeën. Vink een box aan. <span class="pill">({{ presents|selectattr('bought')|list|length }}/{{ presents|length }}) aangevinkt</span></p>
+      <div style="text-align: right; margin-top: 10px;">
+        <a href="{{ url_for('logout') }}" style="color: var(--muted); text-decoration: none; font-size: 14px;">🚪 Uitloggen</a>
+      </div>
     </div>
     <form action="{{ url_for('update') }}" method="post">
       <ol>

@@ -1,10 +1,10 @@
 Name,Link,Bought
 Bo Jungle Dolphin Nougat Potje,https://www.mamaloes.nl/bo-jungle-dolphin-nougat-potje-b416020,false
 Jollein Knuffel Fairy Mae,https://www.babyentiener.nl/jollein-knuffel-fairy-mae.html,false
-Jollein Knuffel Fairy Livia,https://www.babyentiener.nl/jollein-knuffel-fairy-livia.html,true
+Jollein Knuffel Fairy Livia,https://www.babyentiener.nl/jollein-knuffel-fairy-livia.html,false
 Antislip Haarspeldjes Raquel,https://www.mooiehaartjes.nl/product/14175771/antislip-haarspeldjes-raquel,false
 Haarband Selma Licht,https://www.mooiehaartjes.nl/product/10885455/haarband-selma-licht,false
-Haarspeldje Anti Slip Set Light Pink,https://happybylies.com/products/haarspeldje-anti-slip-set-light-pink,true
+Haarspeldje Anti Slip Set Light Pink,https://happybylies.com/products/haarspeldje-anti-slip-set-light-pink,false
 Plus-Plus BIG Bloom 100 st,https://toyacademy.nl/plus-plus-big-bloom-100-st-1123-3491,false
 Plus-Plus BIG Pastel 100 stk,https://toyacademy.nl/plus-plus-big-pastel-100-stk-1123-3412,false
 Tryco Grey Potje,https://www.mamaloes.nl/tryco-grey-potje-tr-901976,false

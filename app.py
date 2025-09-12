@@ -1,11 +1,20 @@
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 import csv
 import os
 
 app = Flask(__name__)
+app.secret_key = 'jarigesaar_secret_key_2025'  # In productie gebruik een echte secret key
+
+# Wachtwoord instelling
+PASSWORD = "jarigesaar"
 
 PRESENTS_FILE = os.path.join(os.path.dirname(__file__), "presents.txt")
+
+
+def is_authenticated():
+    """Check if user is authenticated"""
+    return session.get('authenticated', False)
 
 
 def load_presents():
@@ -38,14 +47,36 @@ def save_presents(presents):
             writer.writerow([p.get("name", ""), p.get("link", ""), "true" if p.get("bought") else "false"])
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        password = request.form.get("password", "")
+        if password == PASSWORD:
+            session['authenticated'] = True
+            return redirect(url_for("index"))
+        else:
+            return render_template("login.html", error="Onjuist wachtwoord")
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.pop('authenticated', None)
+    return redirect(url_for("login"))
+
+
 @app.route("/", methods=["GET"])
 def index():
+    if not is_authenticated():
+        return redirect(url_for("login"))
     presents = load_presents()
-    return render_template("index.html", title="Cadeaulijstje 2025", presents=presents)
+    return render_template("index.html", title="Cadeaulijstje Sara 2025", presents=presents)
 
 
 @app.route("/update", methods=["POST"])
 def update():
+    if not is_authenticated():
+        return redirect(url_for("login"))
     presents = load_presents()
     checked_indices = set()
     for value in request.form.getlist("bought"):
@@ -62,6 +93,8 @@ def update():
 @app.route("/toggle", methods=["POST"])
 def toggle():
     """Toggle a single present's bought state based on index and checked flag."""
+    if not is_authenticated():
+        return jsonify({"ok": False, "error": "not_authenticated"}), 401
     presents = load_presents()
     try:
         idx = int(request.form.get("index", "-1"))
