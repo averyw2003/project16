@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f2ec">
+  <title>{% block title %}Cadeaulijst{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</head>
+<body>
+  <div class="site-shell">
+    <header class="topbar">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="Naar de cadeaulijst"><span class="brand-mark" aria-hidden="true">✦</span> Cadeaulijst</a>
+      <nav aria-label="Hoofdnavigatie">
+        <a href="{{ url_for('index') }}">Cadeaus</a>
+        {% if session.get('authenticated') %}
+          <a href="{{ url_for('admin') }}">Beheer</a>
+          <form method="post" action="{{ url_for('logout') }}" class="nav-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="nav-button">Uitloggen</button>
+          </form>
+        {% else %}
+          <a href="{{ url_for('login') }}">Beheer</a>
+        {% endif %}
+      </nav>
+    </header>
+    <main id="main-content">{% block content %}{% endblock %}</main>
+    <footer class="site-footer">Met aandacht uitgezocht ♡</footer>
+  </div>
+</body>
+</html>

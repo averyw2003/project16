@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} · Cadeaulijst{% endblock %}
+
+{% block content %}
+<section class="auth-panel panel" aria-labelledby="error-title">
+  <p class="eyebrow">Oeps</p>
+  <h1 id="error-title">{{ title }}</h1>
+  <p class="muted">{{ message }}</p>
+
+  <a class="button button-primary full-width" href="{{ url_for('index') }}">
+    Terug naar de cadeaulijst <span aria-hidden="true">→</span>
+  </a>
+</section>
+{% endblock %}

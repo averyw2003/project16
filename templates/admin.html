@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}Beheer · Cadeaulijst{% endblock %}
+
+{% block content %}
+<section class="page-intro">
+  <p class="eyebrow">Achter de schermen</p>
+  <h1>Cadeaus beheren</h1>
+  <p class="muted">
+    Voeg ideeën toe en houd de lijst overzichtelijk.
+    Afvinken kan op de homepage zodra je bent ingelogd.
+  </p>
+</section>
+
+<div class="admin-layout">
+  <section class="panel admin-form" aria-labelledby="add-title">
+    <h2 id="add-title">Nieuw cadeau</h2>
+    <p class="muted">
+      Een naam is voldoende. Productlink en afbeelding zijn optioneel.
+    </p>
+
+    {% if error %}
+      <p class="alert" role="alert">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('add_present') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <label for="name">Naam</label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        maxlength="120"
+        placeholder="Bijvoorbeeld: houten speelgoed"
+        required
+      >
+
+      <label for="link">
+        Productlink <span class="optional">(optioneel)</span>
+      </label>
+      <input
+        id="link"
+        name="link"
+        type="url"
+        maxlength="2000"
+        placeholder="https://voorbeeld.nl/cadeau"
+      >
+
+      <label for="image_url">
+        Afbeeldingslink <span class="optional">(optioneel)</span>
+      </label>
+      <input
+        id="image_url"
+        name="image_url"
+        type="url"
+        maxlength="2000"
+        placeholder="https://voorbeeld.nl/afbeelding.jpg"
+      >
+      <p class="form-hint">
+        Plak een directe link naar een afbeelding, bijvoorbeeld een
+        .jpg-, .png- of .webp-bestand. Laat dit veld leeg als je geen
+        afbeelding wilt tonen.
+      </p>
+
+      <button type="submit" class="button button-primary full-width">
+        Cadeau toevoegen <span aria-hidden="true">＋</span>
+      </button>
+    </form>
+  </section>
+
+  <section class="panel admin-list" aria-labelledby="list-title">
+    <div class="list-heading">
+      <h2 id="list-title">Op de lijst</h2>
+      <span class="count-badge">{{ presents|length }}</span>
+    </div>
+
+    {% if presents %}
+      <ul>
+        {% for p in presents %}
+          <li class="admin-item">
+            <span class="admin-item-icon" aria-hidden="true">✦</span>
+
+            <div class="admin-item-copy">
+              <strong>{{ p.name }}</strong>
+              <span>{{ 'Gekocht' if p.bought else 'Beschikbaar' }}</span>
+            </div>
+
+            <form
+              method="post"
+              action="{{ url_for('delete_present') }}"
+              data-confirm="Weet je zeker dat je dit cadeau wilt verwijderen?"
+            >
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="id" value="{{ p.id }}">
+
+              <button
+                type="submit"
+                class="button-delete"
+                aria-label="Verwijder {{ p.name }}"
+              >
+                Verwijder
+              </button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">Er staan nog geen cadeaus op de lijst.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
