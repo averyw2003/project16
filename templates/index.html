@@ -145,19 +145,17 @@
             <span class="gift-no-link">Geen productlink</span>
           {% endif %}
 
-          {% if session.get('authenticated') %}
-            <label class="check-label">
-              <input
-                class="gift-toggle"
-                type="checkbox"
-                data-id="{{ p.id }}"
-                data-url="{{ url_for('toggle') }}"
-                data-csrf="{{ csrf_token() }}"
-                {% if p.bought %}checked{% endif %}
-              >
-              <span>Gekocht</span>
-            </label>
-          {% endif %}
+              <label class="check-label">
+      <input
+        class="gift-toggle"
+        type="checkbox"
+        data-id="{{ p.id }}"
+        data-url="{{ url_for('toggle') }}"
+        data-csrf="{{ csrf_token() }}"
+        {% if p.bought %}checked{% endif %}
+      >
+      <span>Gereserveerd</span>
+    </label>
         </div>
       </article>
       {% endfor %}

@@ -291,7 +291,6 @@ def delete_present():
 
 
 @app.route("/toggle", methods=["POST"])
-@admin_only
 def toggle():
     try:
         present_id = int(request.form.get("id", ""))
