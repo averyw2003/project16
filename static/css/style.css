@@ -181,3 +181,41 @@
   .gift-grid[data-view="list"] .card-bottom{justify-content:space-between;padding-top:6px;border-top:1px solid var(--line)}
   .gift-grid[data-view="list"] .gift-link{font-size:10px;white-space:normal}
 }
+
+/* Mobiel: maak de volledige "Gekocht"-regel goed klikbaar. */
+@media (max-width: 610px) {
+  .gift-grid[data-view="list"] .check-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 92px;
+    min-height: 44px;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--paper);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .gift-grid[data-view="list"] .check-label input {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    flex: 0 0 20px;
+    accent-color: var(--rose-dark);
+    cursor: pointer;
+  }
+
+  .gift-grid[data-view="list"] .check-label span {
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .gift-grid[data-view="list"] .card-bottom {
+    min-height: 52px;
+    align-items: center;
+  }
+}
