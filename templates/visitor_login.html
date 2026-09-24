@@ -1,101 +1,35 @@
 {% extends 'base.html' %}
-{% block title %}Cadeaulijst · Sara{% endblock %}
+
+{% block title %}Toegang · Lijstje{% endblock %}
 
 {% block content %}
-<section class="catalog catalog-compact" aria-labelledby="ideas-title">
-  <div class="catalog-toolbar-heading">
-    <div class="list-heading-row">
-      <div>
-        <p class="section-label">Sara · 28 oktober 2026</p>
-        <h1 id="ideas-title">Lijstje</h1>
-      </div>
+<section class="auth-panel panel" aria-labelledby="visitor-login-title">
+  <p class="eyebrow">Privé-lijstje</p>
+  <h1 id="visitor-login-title">Welkom</h1>
+  <p class="muted">
+    Voer het wachtwoord in om het lijstje van Sara te bekijken.
+  </p>
 
-      <div class="mini-countdown" data-countdown-target="2026-10-28T00:00:00+02:00" aria-label="Aftellen tot de verjaardag van Sara">
-        <span class="mini-countdown-label">Nog</span>
-        <strong id="countdown-days">000</strong>
-        <span class="mini-countdown-label">dagen</span>
-        <span class="mini-countdown-dot" aria-hidden="true">·</span>
-        <span id="countdown-hours">00</span><span>u</span>
-        <span id="countdown-minutes">00</span><span>m</span>
-        <span id="countdown-seconds">00</span><span>s</span>
-        <span class="sr-only" id="countdown-message" aria-live="polite">tot de verjaardag van Sara</span>
-      </div>
-    </div>
-
-    <div class="toolbar">
-      <label class="search-wrap" for="gift-search">
-        <span aria-hidden="true">⌕</span>
-        <input id="gift-search" type="search" placeholder="Zoek een cadeau…" autocomplete="off">
-      </label>
-
-      {% if presents %}
-      <div class="toolbar-actions">
-        <div class="filters" role="group" aria-label="Filter cadeaus">
-          <button type="button" class="filter active" data-filter="all" aria-pressed="true">Alles</button>
-          <button type="button" class="filter" data-filter="available" aria-pressed="false">Beschikbaar</button>
-          <button type="button" class="filter" data-filter="bought" aria-pressed="false">Gekocht</button>
-        </div>
-
-        <div class="view-switcher" role="group" aria-label="Kies een weergave">
-          <button type="button" class="view-button" data-view="grid" aria-pressed="false" title="Kaartweergave">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
-            <span class="sr-only">Kaartweergave</span>
-          </button>
-          <button type="button" class="view-button active" data-view="list" aria-pressed="true" title="Lijstweergave">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"></path><path d="M3 6h.01M3 12h.01M3 18h.01"></path></svg>
-            <span class="sr-only">Lijstweergave</span>
-          </button>
-        </div>
-      </div>
-      {% endif %}
-    </div>
-  </div>
-
-  {% if presents %}
-    <p id="filter-empty" class="empty-state" hidden>Geen cadeaus gevonden. Probeer een andere zoekterm of filter.</p>
-
-    <div class="gift-grid" id="gift-grid" data-view="list">
-      {% for p in presents %}
-      <article class="gift-card {% if p.bought %}is-bought{% endif %}" data-name="{{ p.name|lower }}" data-status="{{ 'bought' if p.bought else 'available' }}">
-        <div class="card-top">
-          <span class="gift-icon" aria-hidden="true">{{ ['✿', '✦', '♡', '◈'][loop.index0 % 4] }}</span>
-          <span class="status {% if p.bought %}status-bought{% else %}status-available{% endif %}">{{ 'Gekocht' if p.bought else 'Beschikbaar' }}</span>
-        </div>
-
-        <div class="gift-body">
-          {% if p.image_url %}
-            <img class="gift-image" src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy" referrerpolicy="no-referrer">
-          {% else %}
-            <div class="gift-image gift-image-placeholder" aria-hidden="true">{{ ['✿', '✦', '♡', '◈'][loop.index0 % 4] }}</div>
-          {% endif %}
-
-          <div class="gift-text">
-            <p class="gift-number">IDEE {{ '%02d'|format(loop.index) }}</p>
-            <h2>{{ p.name }}</h2>
-          </div>
-        </div>
-
-        <div class="card-bottom">
-          {% if p.link %}
-            <a class="gift-link" href="{{ p.link }}" target="_blank" rel="noopener noreferrer">Bekijk cadeau <span aria-hidden="true">↗</span></a>
-          {% else %}
-            <span class="gift-no-link">Geen productlink</span>
-          {% endif %}
-
-          {% if session.get('authenticated') %}
-            <label class="check-label">
-              <input class="gift-toggle" type="checkbox" data-id="{{ p.id }}" data-url="{{ url_for('toggle') }}" data-csrf="{{ csrf_token() }}" {% if p.bought %}checked{% endif %}>
-              <span>Gekocht</span>
-            </label>
-          {% endif %}
-        </div>
-      </article>
-      {% endfor %}
-    </div>
-
-    <p id="save-feedback" class="sr-only" role="status" aria-live="polite"></p>
-  {% else %}
-    <div class="empty-state">De cadeaulijst is nog leeg. Log in via Beheer om het eerste cadeau toe te voegen.</div>
+  {% if error %}
+    <p class="alert" role="alert">{{ error }}</p>
   {% endif %}
+
+  <form method="post" action="{{ url_for('visitor_login') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <label for="password">Wachtwoord</label>
+    <input
+      id="password"
+      name="password"
+      type="password"
+      required
+      autocomplete="current-password"
+      autofocus
+    >
+
+    <button type="submit" class="button button-primary full-width">
+      Open lijstje <span aria-hidden="true">→</span>
+    </button>
+  </form>
 </section>
 {% endblock %}

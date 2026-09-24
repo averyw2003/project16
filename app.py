@@ -24,6 +24,7 @@ app = Flask(__name__)
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH")
+VISITOR_PASSWORD_HASH = os.environ.get("VISITOR_PASSWORD_HASH")
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_SECRET_KEY = os.environ.get("SUPABASE_SECRET_KEY")
 
@@ -32,6 +33,7 @@ missing_settings = [
     for name, value in {
         "SECRET_KEY": SECRET_KEY,
         "ADMIN_PASSWORD_HASH": ADMIN_PASSWORD_HASH,
+        "VISITOR_PASSWORD_HASH": VISITOR_PASSWORD_HASH,
         "SUPABASE_URL": SUPABASE_URL,
         "SUPABASE_SECRET_KEY": SUPABASE_SECRET_KEY,
     }.items()
@@ -123,6 +125,17 @@ def admin_only(view):
 
     return wrapped
 
+def visitor_only(view):
+    """Laat alleen bezoekers met het gedeelde wachtwoord toe."""
+
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+        if session.get("visitor_authenticated"):
+            return view(*args, **kwargs)
+
+        return redirect(url_for("visitor_login"))
+
+    return wrapped
 
 def load_presents() -> list[dict]:
     """Lees cadeaus uit Supabase, gesorteerd op aanmaakmoment en ID."""
@@ -187,6 +200,7 @@ def add_security_headers(response):
 
 
 @app.route("/")
+@visitor_only
 def index():
     presents = load_presents()
 
@@ -197,6 +211,23 @@ def index():
     )
 
 
+@app.route("/visitor-login", methods=["GET", "POST"])
+def visitor_login():
+    if request.method == "POST":
+        password = request.form.get("password", "")
+
+        if check_password_hash(VISITOR_PASSWORD_HASH, password):
+            session["visitor_authenticated"] = True
+            session["csrf_token"] = secrets.token_urlsafe(32)
+            return redirect(url_for("index"))
+
+        return render_template(
+            "visitor_login.html",
+            error="Onjuist wachtwoord.",
+        ), 401
+
+    return render_template("visitor_login.html")
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -206,6 +237,7 @@ def login():
             # Voorkomt session fixation en maakt een nieuw token.
             session.clear()
             session["authenticated"] = True
+            session["visitor_authenticated"] = True
             session["csrf_token"] = secrets.token_urlsafe(32)
             return redirect(url_for("admin"))
 
@@ -291,6 +323,7 @@ def delete_present():
 
 
 @app.route("/toggle", methods=["POST"])
+@visitor_only
 def toggle():
     try:
         present_id = int(request.form.get("id", ""))
